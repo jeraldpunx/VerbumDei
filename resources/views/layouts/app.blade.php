@@ -12,10 +12,13 @@
 
 
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ url('css/bootstrap.min.css') }}">
+    <link href="{{ url('css/bootstrap.min.css') }}" rel="stylesheet" >
     <link href="{{ url('css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
- 
-
+    <link href="{{ url('css/style.css') }}" rel="stylesheet" >
+    <link href="{{ url('css/myStyle.css') }}" rel="stylesheet" >
+    
+    @yield('style')
+    
 
     <!-- Scripts -->
     <script>
@@ -47,32 +50,30 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        @if (Session::has('username') && Session::get('usertype') == 'MERCHANT')
+                            <li><a href="{{ url('admin/event') }}">Events</a></li>
+                            <li><a href="{{ url('admin/kyc') }}">Members</a></li>
+                        @elseif (Session::has('username') && Session::get('usertype') == 'CLIENT')
+                            <li><a href="{{ url('event') }}">Events</a></li>
+                        @endif
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
-                        @if (Auth::guest())
+                        @if (!Session::has('username'))
                             <li><a href="{{ url('/login') }}">Login</a></li>
                             <li><a href="{{ url('/register') }}">Register</a></li>
                         @else
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                <a href="#" style="text-transform: uppercase;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    {{ Session::get('username') }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a href="{{ url('/logout') }}"
-                                            onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
-
-                                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
+                                        @if(Session::get('usertype') == 'CLIENT')<a href="{{ url('profile') }}">Profile</a>@endif
+                                        <a href="{{ url('/logout') }}">Logout</a>
                                     </li>
                                 </ul>
                             </li>
@@ -83,26 +84,58 @@
         </nav>
 
         @yield('content')
+        
     </div>
 
-
+    <footer>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div class="copyright">
+                            © 2017, Verbum Dei, All rights reserved
+                        </div>
+                    </div>
+                    <!-- <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6"> -->
+                    <div class="pull-right">
+                        <div class="design">
+                             <a target="_blank" href="http://www.ixbase.net">iXBase Incorporated </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Scripts -->
-
-    
- 
-
-    <!-- <script src="{{ url('js/app.js') }}"></script> -->
+    <!-- <script src="{{ url('js/app.js') }}"></scaript> -->
     <script src="{{ url('js/jquery-3.2.0.min.js') }}"></script>
     <script src="{{ url('js/bootstrap.min.js') }}"></script>
     <script src="{{ url('js/myScript.js') }}"></script>
-
- 
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.13/af-2.1.3/b-1.2.4/b-colvis-1.2.4/cr-1.3.2/fc-3.2.2/fh-3.1.2/kt-2.2.0/r-2.1.1/rr-1.2.0/sc-1.4.2/se-1.2.0/datatables.min.js"></script>
-<!-- <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/af-2.1.3/b-1.2.4/b-colvis-1.2.4/cr-1.3.2/fc-3.2.2/fh-3.1.2/kt-2.2.0/r-2.1.1/rr-1.2.0/sc-1.4.2/se-1.2.0/datatables.min.js"></script> -->
-    <!-- <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script> -->
     <script src="{{ url('js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ url('js/dataTables.bootstrap.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            if(localStorage.getItem("communities") === null) {
+                $.ajax({
+                  type: 'GET',
+                  url: 'http://52.74.115.167:703/index.php',
+                  crossDomain: true,
+                  data: {
+                    mtmaccess_api: true, 
+                    transaction: 20021
+                  },
+                  cache: false,
+                  success: function(data) {
+                    var data = JSON.parse(data);
+                    if(data.success) {
+                        localStorage.setItem('communities', JSON.stringify(data.result));
+                    }
+                  }
+                });
+            }
+        });
+    </script>
     @yield('script')
 </body>
 </html>
