@@ -42,7 +42,3 @@ Route::get('event/{eventId}', 'ClientController@event')->name('viewEvent');
 Route::post('profile/update/{profileId}/personal', 'ClientController@postProfilePersonal')->name('profile/update/personal');
 Route::post('profile/update/{profileId}/contact', 'ClientController@postProfileContact')->name('profile/update/contact');
 Route::post('profile/update/{profileId}/beneficiary', 'ClientController@postProfileBeneficiary')->name('profile/update/beneficiary');
-
-Route::get('test', function(){
-	return Config::get('constants.regions');
-});

@@ -356,3 +356,14 @@ body { height: 1000px; }
     background-color: transparent;
     font-size:18px;
 }
+
+
+.bootstrap-select.btn-group .dropdown-menu li:not(.disabled) a:hover small, .bootstrap-select.btn-group .dropdown-menu li:not(.disabled) a:focus small, .bootstrap-select.btn-group .dropdown-menu li.active:not(.disabled) a small {
+    color: white;
+    /* color: rgba(100,177,216,.4); */
+}
+
+.dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
+    color: white;
+    background-color: #337AB7;
+}

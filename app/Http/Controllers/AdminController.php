@@ -122,6 +122,9 @@ class AdminController extends Controller
 
     public function printAllUserQr()
     {
+        if(!Input::get('id')) {
+            return redirect()->back();
+        }
         $users = Curl::to('http://52.74.115.167:703/index.php')
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20007',
@@ -172,6 +175,13 @@ class AdminController extends Controller
 
     public function eventAttendees($eventId)
     {
+        $members = Curl::to('http://52.74.115.167:703/index.php')
+            ->withData([ 'mtmaccess_api' => 'true',
+                          'transaction' => '20020' ])
+            ->asJson()
+            ->get();
+
+
     	$attendees = Curl::to('http://52.74.115.167:703/index.php')
 	        ->withData([ 'mtmaccess_api' => 'true',
 	                      'transaction' => '24012',
@@ -181,9 +191,9 @@ class AdminController extends Controller
 
 	    if($attendees->success) {
 	        // if (count($attendees->result) == count($attendees->result, COUNT_RECURSIVE)) $attendees->result = [$attendees->result];
-	        return view('event.attendees', ['attendees'=>$attendees->result]);
+	        return view('event.attendees', ['attendees'=>$attendees->result, 'members'=>$members->result]);
 	    } else if($attendees->success == null) {
-            return view('event.attendees', ['attendees'=>[]]);
+            return view('event.attendees', ['attendees'=>[], 'members'=>$members->result]);
         }
     }
 

@@ -29,6 +29,8 @@
                                 <a class='btn btn-primary' href="{{ route('viewEventAttendees', [$event->id]) }}">View Attendees</a>
                             </td>
                         </tr>
+
+
                         @endforeach
                         </tbody>
                     </table>

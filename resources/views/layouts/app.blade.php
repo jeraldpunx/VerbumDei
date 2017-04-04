@@ -16,6 +16,7 @@
     <link href="{{ url('css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url('css/font-awesome.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
     <link href="{{ url('css/style.css') }}" rel="stylesheet" >
     <link href="{{ url('css/myStyle.css') }}" rel="stylesheet" >
     
@@ -89,26 +90,6 @@
         
     </div>
 
-    <footer>
-        <div class="footer-bottom">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div class="copyright">
-                            © 2017, Verbum Dei, All rights reserved
-                        </div>
-                    </div>
-                    <!-- <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6"> -->
-                    <div class="pull-right">
-                        <div class="design">
-                             <a target="_blank" href="http://www.ixbase.net">iXBase Incorporated </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <!-- Scripts -->
     <!-- <script src="{{ url('js/app.js') }}"></scaript> -->
     <script src="{{ url('js/jquery-3.2.0.min.js') }}"></script>
@@ -117,6 +98,7 @@
     <script src="{{ url('js/myScript.js') }}"></script>
     <script src="{{ url('js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ url('js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js">
     <script type="text/javascript">
         $(document).ready(function(){
             if(localStorage.getItem("communities") === null) {

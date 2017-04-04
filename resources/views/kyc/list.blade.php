@@ -35,8 +35,8 @@
                                     <td>{{ Carbon\Carbon::parse($member->birthDate)->format('Y-m-d') }}</td>
                                     <td>{{ $member->gender }}</td>
                                     <td>
-                                        <a class='btn btn-success' href="{{ route('printUserId', ['id'=>$member->profileId]) }}">Print ID</a>
-                                        <a class='btn btn-success' href="{{ route('printUserQr', ['id'=>$member->profileId]) }}">Print QR Code</a>
+                                        <a class='btn btn-success' href="{{ route('printUserId', ['id'=>$member->profileId]) }}"><span class="fa fa-id-card"></span></a>
+                                        <a class='btn btn-success' href="{{ route('printUserQr', ['id'=>$member->profileId]) }}"><span class="fa fa-qrcode"></span></a>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -91,12 +91,19 @@
              'className': 'dt-body-center',
              'render': function (data, type, full, meta){
                  return '<input type="checkbox">';
-             }}],
+             }},{
+              'targets': 4,
+              'searchable':false,
+              'orderable': false,
+              'className': 'dt-body-center',
+              'width': '13%'
+             }],
              "dom": '<"toolbar">frtip'
          });
         // $('<button id="refresh">Print</button>').appendTo('div.dataTables_filter');
-        $("div.toolbar").html("<a href='{{ url('admin/kyc/new') }}' class='btn btn-success'>New</a>  <button class='btn btn-primary printSelected'>Print QR Code</button>");
+        $("div.toolbar").html("<a href='{{ url('admin/kyc/new') }}' class='btn btn-success'><span class='fa fa-plus'></span> New</a>  <button class='btn btn-primary printSelected'><span class='fa fa-qrcode'> - (<span class='selectedCount'>0</span> Selected)</button>");
 
+        var count = 0;
          // Handle click on checkbox
        $('#example tbody').on('click', 'input[type="checkbox"]', function(e){
           var $row = $(this).closest('tr');
@@ -113,11 +120,15 @@
           // If checkbox is checked and row ID is not in list of selected row IDs
           if(this.checked && index === -1){
              rows_selected.push(rowId);
+             count++;
 
           // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
           } else if (!this.checked && index !== -1){
+            count--;
              rows_selected.splice(index, 1);
           }
+
+          $(".selectedCount").html(count);
 
           if(this.checked){
              $row.addClass('selected');
