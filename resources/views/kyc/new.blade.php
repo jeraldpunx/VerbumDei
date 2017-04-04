@@ -14,16 +14,17 @@
                     <span class="message">@if(session()->has('response')){{ session('response')->msg }}@endif</span>
                 </div>
                 <div class="panel with-nav-tabs panel-default">
-                    <div class="panel-heading">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#Personal" data-toggle="tab">1. Personal</a></li>
-                            <li><a href="#Contact" data-toggle="tab">2. Contact</a></li>
-                            <li><a href="#Financial" data-toggle="tab">3. Financial</a></li>
-                            <li><a href="#Benefeciaries" data-toggle="tab">4. Benefeciaries</a></li>
-                        </ul>
-                    </div>
-                    <div class="panel-body">
-                        <form class="form-horizontal" method="POST" action="{{ url('admin/kyc/new') }}">
+                    <form class="form-horizontal" method="POST" action="{{ url('admin/kyc/new') }}">
+                        <div class="panel-heading">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#Personal" data-toggle="tab">1. Personal</a></li>
+                                <li><a href="#Contact" data-toggle="tab">2. Contact</a></li>
+                                <li><a href="#Financial" data-toggle="tab">3. Financial</a></li>
+                                <li><a href="#Benefeciaries" data-toggle="tab">4. Benefeciaries</a></li>
+                                <button type="submit" class="btn btn-success btn-sm stepfour pull-right"><span class="fa fa-save"></span> Save</button>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="Personal">
                                     {{ csrf_field() }}
@@ -167,35 +168,52 @@
                                     <div class="form-group">
                                         <label for="country" class="col-md-4 control-label">Country*</label>
                                         <div class="col-md-6">
-                                            <input id="country" type="text" class="form-control" name="country" value="{{ old('country') }}" autofocus>
+                                        {{ Form::select('country', 
+                                            ['Philippines'=>'Philippines'], 
+                                            'Philippines', 
+                                            ['id' => 'country', 'class' => 'form-control','placeholder' => '-Select Country-', 'disabled']) 
+                                        }}
                                         </div>
                                     </div>
+
+
 
                                     <div class="form-group">
                                         <label for="region" class="col-md-4 control-label">Region*</label>
                                         <div class="col-md-6">
-                                            <input id="region" type="text" class="form-control" name="region" value="{{ old('region') }}" autofocus>
+                                            <select class="form-control" id="region" name="region">
+                                                <option value="">-Select Region-</option>
+                                                @foreach($regions as $key => $region)
+                                                    <option value="{{ $key }}">{{ $key }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="province" class="col-md-4 control-label">Province*</label>
                                         <div class="col-md-6">
-                                            <input id="province" type="text" class="form-control" name="province" value="{{ old('province') }}" autofocus>
+                                            <select class="form-control" id="province" name="province">
+                                                <option value="">-Select Region-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="municipal" class="col-md-4 control-label">City or Municipal*</label>
                                         <div class="col-md-6">
-                                            <input id="municipal" type="text" class="form-control" name="municipal" value="{{ old('municipal') }}" autofocus>
+                                            <select class="form-control" id="municipal" name="municipal">
+                                                <option value="">-Select Municipal-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="brgy" class="col-md-4 control-label">Barangay*</label>
                                         <div class="col-md-6">
-                                            <input id="brgy" type="text" class="form-control" name="brgy" value="{{ old('brgy') }}" autofocus>
+                                            <select class="form-control" id="brgy" name="brgy">
+                                                <option value="">-Select Barangay-</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -220,35 +238,50 @@
                                     <div class="form-group">
                                         <label for="h_country" class="col-md-4 control-label">Country</label>
                                         <div class="col-md-6">
-                                            <input id="h_country" type="text" class="form-control" name="h_country" value="{{ old('h_country') }}" autofocus>
+                                        {{ Form::select('h_country', 
+                                            ['Philippines'=>'Philippines'], 
+                                            'Philippines', 
+                                            ['id' => 'h_country', 'class' => 'form-control','placeholder' => '-Select Country-', 'disabled']) 
+                                        }}
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="h_region" class="col-md-4 control-label">Region</label>
                                         <div class="col-md-6">
-                                            <input id="h_region" type="text" class="form-control" name="h_region" value="{{ old('h_region') }}" autofocus>
+                                            <select class="form-control" id="h_region" name="h_region">
+                                                <option value="">-Select Region-</option>
+                                                @foreach($regions as $key => $region)
+                                                    <option value="{{ $key }}">{{ $key }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="h_province" class="col-md-4 control-label">Province</label>
                                         <div class="col-md-6">
-                                            <input id="h_province" type="text" class="form-control" name="h_province" value="{{ old('h_province') }}" autofocus>
+                                            <select class="form-control" id="h_province" name="h_province">
+                                                <option value="">-Select Province-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="h_municipal" class="col-md-4 control-label">City or Municipal</label>
                                         <div class="col-md-6">
-                                            <input id="h_municipal" type="text" class="form-control" name="h_municipal" value="{{ old('h_municipal') }}" autofocus>
+                                            <select class="form-control" id="h_municipal" name="h_municipal">
+                                                <option value="">-Select Municipal-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="h_brgy" class="col-md-4 control-label">Barangay</label>
                                         <div class="col-md-6">
-                                            <input id="h_brgy" type="text" class="form-control" name="h_brgy" value="{{ old('h_brgy') }}" autofocus>
+                                            <select class="form-control" id="h_brgy" name="h_brgy">
+                                                <option value="">-Select Barangay-</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -260,7 +293,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="h_zipcode" class="col-md-4 control-label">Street Address</label>
+                                        <label for="h_zipcode" class="col-md-4 control-label">Zip Code</label>
                                         <div class="col-md-6">
                                             <input id="h_zipcode" type="text" class="form-control" name="h_zipcode" value="{{ old('h_zipcode') }}" autofocus>
                                         </div>
@@ -305,28 +338,39 @@
                                     <div class="form-group">
                                         <label for="empRegion" class="col-md-4 control-label">Region</label>
                                         <div class="col-md-6">
-                                            <input id="empRegion" type="text" class="form-control" name="empRegion" value="{{ old('empRegion') }}" autofocus>
+                                            <select class="form-control" id="empRegion" name="empRegion">
+                                                <option value="">-Select Region-</option>
+                                                @foreach($regions as $key => $region)
+                                                    <option value="{{ $key }}">{{ $key }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="empProvince" class="col-md-4 control-label">Province</label>
                                         <div class="col-md-6">
-                                            <input id="empProvince" type="text" class="form-control" name="empProvince" value="{{ old('empProvince') }}" autofocus>
+                                            <select class="form-control" id="empProvince" name="empProvince">
+                                                <option value="">-Select Province-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="empMunicipal" class="col-md-4 control-label">City or Municipal</label>
                                         <div class="col-md-6">
-                                            <input id="empMunicipal" type="text" class="form-control" name="empMunicipal" value="{{ old('empMunicipal') }}" autofocus>
+                                            <select class="form-control" id="empMunicipal" name="empMunicipal">
+                                                <option value="">-Select Municipal-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="empBrgy" class="col-md-4 control-label">Barangay</label>
                                         <div class="col-md-6">
-                                            <input id="empBrgy" type="text" class="form-control" name="empBrgy" value="{{ old('empBrgy') }}" autofocus>
+                                            <select class="form-control" id="empBrgy" name="empBrgy">
+                                                <option value="">-Select Barangay-</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -355,11 +399,8 @@
                                 <!-- ---------------------------------------------------------------- -->
                                 <div class="tab-pane fade in" id="Benefeciaries">
                                     <div class="form-group col-md-12">
-                                        <div class="pull-right">
-                                            <input type="button" id="btnAdd" class="btn btn-success" value="Add" />
-                                            <button type="submit" class="btn btn-primary stepfour">
-                                                Save
-                                            </button>
+                                        <div class="">
+                                            <input type="button" id="btnAdd" class="btn btn-success" value="Add more beneficiary" />
                                         </div>
                                     </div>
 
@@ -397,32 +438,32 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
+                    </form>
 
-                        <div id="beneficiary_hidden" style="display: none">
-                            <div class="beneficiary col-md-12">
-                                <hr>
-                                <div class="form-group row">
-                                    <label class="col-md-1" for="name">Name: </label>
-                                    <div class="col-md-2">
-                                        <input id="name" type="text" class="form-control" name="name[]" autofocus>
-                                    </div>
-
-                                    <label class="col-md-1" for="birthDate">Birth Date: </label>
-                                    <div class="col-md-2">
-                                        <input id="birthDate" type="text" class="form-control" name="birthDate[]"  autofocus >
-                                    </div>
-                                    <label for="relationship" class="col-md-2">Relationship: </label>
-                                    <div class="col-md-3">
-                                        {{ Form::select("relationship[]", 
-                                            ['Uncle'=>'Uncle', 'Auntie'=>'Auntie', 'Brother'=>'Brother', 'Sister'=>'Sister', 'Mother'=>'Mother', 'Father'=>'Father', 'Spouse'=>'Spouse'], 
-                                            null,
-                                            ['id' => 'relationship', 'class' => 'form-control','placeholder' => '-Select Relationship-']) 
-                                        }}
-                                    </div>
-
-                                    <input type="button" class="btnDel btn btn-danger col-md-1" value="X" />
+                    <div id="beneficiary_hidden" style="display: none">
+                        <div class="beneficiary col-md-12">
+                            <hr>
+                            <div class="form-group row">
+                                <label class="col-md-1" for="name">Name: </label>
+                                <div class="col-md-2">
+                                    <input id="name" type="text" class="form-control" name="name[]" autofocus>
                                 </div>
+
+                                <label class="col-md-1" for="birthDate">Birth Date: </label>
+                                <div class="col-md-2">
+                                    <input id="birthDate" type="text" class="form-control" name="birthDate[]"  autofocus >
+                                </div>
+                                <label for="relationship" class="col-md-2">Relationship: </label>
+                                <div class="col-md-3">
+                                    {{ Form::select("relationship[]", 
+                                        ['Uncle'=>'Uncle', 'Auntie'=>'Auntie', 'Brother'=>'Brother', 'Sister'=>'Sister', 'Mother'=>'Mother', 'Father'=>'Father', 'Spouse'=>'Spouse'], 
+                                        null,
+                                        ['id' => 'relationship', 'class' => 'form-control','placeholder' => '-Select Relationship-']) 
+                                    }}
+                                </div>
+
+                                <input type="button" class="btnDel btn btn-danger col-md-1" value="X" />
                             </div>
                         </div>
                     </div>
@@ -435,6 +476,20 @@
 
 @section('script')
 <script type="text/javascript">
+    var json = (function() {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': '{{asset('address.json')}}',
+            'dataType': "json",
+            'success': function (data) {
+                json = data;
+            }
+        });
+        return json;
+    })();
+
     $(document).on('change', '#maritalStatus', function (e) {
         if(this.value == 'Married') {
             $("#spouse").show();
@@ -482,7 +537,7 @@
         if(!firstName || !lastName || !middleName || !gender || !bday || !bplace || !nationality || !civStat) {
             
             $("#error-message").show();
-            $("#error-message .message").html("Please input all fields.");
+            $("#error-message .message").html("Please input all required fields.");
             $("#error-message").addClass("alert-danger");
             if(!firstName) $("#firstName").parents('.form-group').addClass('has-error'); 
                 else $("#firstName").parents('.form-group').removeClass('has-error');
@@ -513,7 +568,7 @@
             }
         } else if(civStat == 'Married' && (!spFname || !spLname || !spMname)) {
             $("#error-message").show();
-            $("#error-message .message").html("Please input all fields.");
+            $("#error-message .message").html("Please input all required fields.");
             $("#error-message").addClass("alert-danger");
             if(!spFname) $("#spouse #spFname").parents('.form-group').addClass('has-error'); 
                 else $("#spouse #spFname").parents('.form-group').removeClass('has-error');
@@ -541,7 +596,7 @@
         if(!country || !region || !province || !municipal || !brgy || !streetAdd || !zipcode) {
             e.preventDefault();
             $("#error-message").show();
-            $("#error-message .message").html("Please input all fields.");
+            $("#error-message .message").html("Please input all required fields.");
             $("#error-message").addClass("alert-danger");
             if(!country) $("#country").parents('.form-group').addClass('has-error'); 
                 else $("#country").parents('.form-group').removeClass('has-error');
@@ -567,5 +622,215 @@
 
         $('.nav-tabs a[href="#Benefeciaries"]').tab('show');
     });
+
+    $('form').on('click', 'button.stepfour', function(e){
+        var firstName       = $("#firstName").val(),
+            lastName        = $("#lastName").val(),
+            middleName      = $("#middleName").val(),
+            maiden          = $("#maiden").val(),
+            gender          = $("#gender").val(),
+            bday            = $("#bday").val(),
+            bplace          = $("#bplace").val(),
+            nationality     = $("#nationality").val(),
+            civStat         = $("#civStat").val(),
+            spFname         = $("#spFname").val(),
+            spLname         = $("#spLname").val(),
+            spMname         = $("#spMname").val();
+
+        var country         = $("#country").val(),
+            region          = $("#region").val(),
+            province        = $("#province").val(),
+            municipal       = $("#municipal").val(),
+            brgy            = $("#brgy").val(),
+            streetAdd       = $("#streetAdd").val(),
+            zipcode         = $("#zipcode").val();
+
+        if(!firstName || !lastName || !middleName || !gender || !bday || !bplace || !nationality || !civStat || !country || !region || !province || !municipal || !brgy || !streetAdd || !zipcode) {
+             e.preventDefault();
+            $("#error-message").show();
+            $("#error-message .message").html("Please input all required fields.");
+            $("#error-message").addClass("alert-danger");
+            if(!firstName) $("#firstName").parents('.form-group').addClass('has-error'); 
+                else $("#firstName").parents('.form-group').removeClass('has-error');
+            if(!lastName) $("#lastName").parents('.form-group').addClass('has-error'); 
+                else $("#lastName").parents('.form-group').removeClass('has-error');
+            if(!middleName) $("#middleName").parents('.form-group').addClass('has-error'); 
+                else $("#middleName").parents('.form-group').removeClass('has-error');
+            if(!maiden) $("#maiden").parents('.form-group').addClass('has-error'); 
+                else $("#maiden").parents('.form-group').removeClass('has-error');
+            if(!gender) $("#gender").parents('.form-group').addClass('has-error'); 
+                else $("#gender").parents('.form-group').removeClass('has-error');
+            if(!bday) $("#bday").parents('.form-group').addClass('has-error'); 
+                else $("#bday").parents('.form-group').removeClass('has-error');
+            if(!bplace) $("#bplace").parents('.form-group').addClass('has-error'); 
+                else $("#bplace").parents('.form-group').removeClass('has-error');
+            if(!nationality) $("#nationality").parents('.form-group').addClass('has-error'); 
+                else $("#nationality").parents('.form-group').removeClass('has-error');
+            if(!civStat) $("#civStat").parents('.form-group').addClass('has-error'); 
+                else $("#civStat").parents('.form-group').removeClass('has-error');
+
+            if(civStat == 'Married' && (!spFname || !spLname || !spMname)) {
+                if(!spFname) $("#spouse #sp_firstName").parents('.form-group').addClass('has-error'); 
+                    else $("#spouse #sp_firstName").parents('.form-group').removeClass('has-error');
+                if(!spLname) $("#spouse #spLname").parents('.form-group').addClass('has-error'); 
+                    else $("#spouse #spLname").parents('.form-group').removeClass('has-error');
+                if(!spMname) $("#spouse #spMname").parents('.form-group').addClass('has-error'); 
+                    else $("#spouse #spMname").parents('.form-group').removeClass('has-error');
+            }
+
+            if(!country) $("#country").parents('.form-group').addClass('has-error'); 
+                else $("#country").parents('.form-group').removeClass('has-error');
+            if(!region) $("#region").parents('.form-group').addClass('has-error'); 
+                else $("#region").parents('.form-group').removeClass('has-error');
+            if(!province) $("#province").parents('.form-group').addClass('has-error'); 
+                else $("#province").parents('.form-group').removeClass('has-error');
+            if(!municipal) $("#municipal").parents('.form-group').addClass('has-error'); 
+                else $("#municipal").parents('.form-group').removeClass('has-error');
+            if(!brgy) $("#brgy").parents('.form-group').addClass('has-error'); 
+                else $("#brgy").parents('.form-group').removeClass('has-error');
+            if(!streetAdd) $("#streetAdd").parents('.form-group').addClass('has-error'); 
+                else $("#streetAdd").parents('.form-group').removeClass('has-error');
+            if(!zipcode) $("#zipcode").parents('.form-group').addClass('has-error'); 
+                else $("#zipcode").parents('.form-group').removeClass('has-error');
+        } else if(civStat == 'Married' && (!spFname || !spLname || !spMname)) {
+             e.preventDefault();
+            $("#error-message").show();
+            $("#error-message .message").html("Please input all required fields.");
+            $("#error-message").addClass("alert-danger");
+            if(!spFname) $("#spouse #spFname").parents('.form-group').addClass('has-error'); 
+                else $("#spouse #spFname").parents('.form-group').removeClass('has-error');
+            if(!spLname) $("#spouse #spLname").parents('.form-group').addClass('has-error'); 
+                else $("#spouse #spLname").parents('.form-group').removeClass('has-error');
+            if(!spMname) $("#spouse #spMname").parents('.form-group').addClass('has-error'); 
+                else $("#spouse #spMname").parents('.form-group').removeClass('has-error');
+        } else {
+            $('.nav-tabs a[href="#Contact"]').tab('show');
+        }
+    });
+    
+    var province, municipal, brgy;
+    $(document).on("change", "#region", function(e){
+        province = json[$(this).val()];
+        $('#province')
+            .empty()
+            .append('<option selected="selected" value="">-Select Province-</option>')
+        $.each(province, function( index, value ) {
+            $('#province').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#province", function(e){
+        municipal = province[$(this).val()];
+        $('#municipal')
+            .empty()
+            .append('<option selected="selected" value="">-Select Municipal-</option>')
+        $.each(municipal, function( index, value ) { 
+            $('#municipal').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#municipal", function(e){
+        brgy = municipal[$(this).val()];
+        $('#brgy')
+            .empty()
+            .append('<option selected="selected" value="">-Select Barangay-</option>')
+        $.each(brgy, function( index, value ) {
+            $('#brgy').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    var h_province, h_municipal, h_brgy;
+    $(document).on("change", "#h_region", function(e){
+        h_province = json[$(this).val()];
+        $('#h_province')
+            .empty()
+            .append('<option selected="selected" value="">-Select Province-</option>')
+        $.each(h_province, function( index, value ) {
+            $('#h_province').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#h_province", function(e){
+        h_municipal = h_province[$(this).val()];
+        $('#h_municipal')
+            .empty()
+            .append('<option selected="selected" value="">-Select Municipal-</option>')
+        $.each(h_municipal, function( index, value ) {
+            $('#h_municipal').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#h_municipal", function(e){
+        h_brgy = h_municipal[$(this).val()];
+        $('#h_brgy')
+            .empty()
+            .append('<option selected="selected" value="">-Select Barangay-</option>')
+        $.each(h_brgy, function( index, value ) {
+            $('#h_brgy').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    var empProvince, empMunicipal, empBrgy;
+    $(document).on("change", "#empRegion", function(e){
+        empProvince = json[$(this).val()];
+        $('#empProvince')
+            .empty()
+            .append('<option selected="selected" value="">-Select Province-</option>')
+        $.each(empProvince, function( index, value ) {
+            $('#empProvince').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#empProvince", function(e){
+        empMunicipal = empProvince[$(this).val()];
+        $('#empMunicipal')
+            .empty()
+            .append('<option selected="selected" value="">-Select Municipal-</option>')
+        $.each(empMunicipal, function( index, value ) {
+            $('#empMunicipal').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#empMunicipal", function(e){
+        empBrgy = empMunicipal[$(this).val()];
+        $('#empBrgy')
+            .empty()
+            .append('<option selected="selected" value="">-Select Barangay-</option>')
+        $.each(empBrgy, function( index, value ) {
+            $('#empBrgy').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    
+
+
+
 </script>
 @endsection

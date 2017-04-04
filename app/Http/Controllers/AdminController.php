@@ -8,6 +8,7 @@ use Session;
 use Input;
 use DNS2D;
 use App;
+use Config;
 ini_set('max_execution_time', 180);
 
 class AdminController extends Controller
@@ -28,7 +29,9 @@ class AdminController extends Controller
 
     public function newkyc()
     {
-        return view('kyc.new');
+        $regions = json_decode(Config::get('constants.regions'));
+
+        return view('kyc.new', ['regions'=>$regions]);
     }
 
     public function postNewKYC()
@@ -179,7 +182,9 @@ class AdminController extends Controller
 	    if($attendees->success) {
 	        // if (count($attendees->result) == count($attendees->result, COUNT_RECURSIVE)) $attendees->result = [$attendees->result];
 	        return view('event.attendees', ['attendees'=>$attendees->result]);
-	    }
+	    } else if($attendees->success == null) {
+            return view('event.attendees', ['attendees'=>[]]);
+        }
     }
 
     

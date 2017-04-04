@@ -14,6 +14,7 @@
     <!-- Styles -->
     <link href="{{ url('css/bootstrap.min.css') }}" rel="stylesheet" >
     <link href="{{ url('css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url('css/font-awesome.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css">
     <link href="{{ url('css/style.css') }}" rel="stylesheet" >
     <link href="{{ url('css/myStyle.css') }}" rel="stylesheet" >

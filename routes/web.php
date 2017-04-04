@@ -44,5 +44,5 @@ Route::post('profile/update/{profileId}/contact', 'ClientController@postProfileC
 Route::post('profile/update/{profileId}/beneficiary', 'ClientController@postProfileBeneficiary')->name('profile/update/beneficiary');
 
 Route::get('test', function(){
-	return Session::get('username');
+	return Config::get('constants.regions');
 });
