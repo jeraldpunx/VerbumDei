@@ -23,7 +23,11 @@ Route::post('register', 'BasicAuthController@postRegister');
 Route::get('logout', 'BasicAuthController@logout');
 
 Route::get('admin/kyc', 'AdminController@kyc');
-Route::get('admin/{profileId}/print', 'AdminController@print')->name('printUser');
+Route::get('admin/kyc/new', 'AdminController@newkyc');
+Route::post('admin/kyc/new', 'AdminController@postNewKYC');
+Route::get('admin/{profileId}/printId', 'AdminController@printUserId')->name('printUserId');
+Route::get('admin/{profileId}/printQr', 'AdminController@printUserQr')->name('printUserQr');
+Route::get('admin/printAllUserQr', 'AdminController@printAllUserQr')->name('printAllUserQr');
 Route::get('admin/event', 'AdminController@events');
 Route::get('admin/event/{eventId}', 'AdminController@event');
 Route::get('admin/event/{eventId}/attendees', 'AdminController@eventAttendees')->name('viewEventAttendees');
@@ -39,8 +43,6 @@ Route::post('profile/update/{profileId}/personal', 'ClientController@postProfile
 Route::post('profile/update/{profileId}/contact', 'ClientController@postProfileContact')->name('profile/update/contact');
 Route::post('profile/update/{profileId}/beneficiary', 'ClientController@postProfileBeneficiary')->name('profile/update/beneficiary');
 
-Route::get('printAll', function(){
-	echo "<pre>";
-	print_r(Input::all());
-	echo "</pre>";
+Route::get('test', function(){
+	return Session::get('username');
 });

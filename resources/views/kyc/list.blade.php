@@ -16,7 +16,7 @@
             <h3>Know Your Client/Members</h3>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form id="frm-example" action="{{url('printAll')}}" method="GET">
+                    <form id="frm-example" action="{{route('printAllUserQr')}}" method="GET">
                         <table id="example" class="table table-striped table-bordered select" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
@@ -34,7 +34,10 @@
                                     <td>{{ $member->lastname.", ".$member->firstname." ".$member->middlename}}</td>
                                     <td>{{ Carbon\Carbon::parse($member->birthDate)->format('Y-m-d') }}</td>
                                     <td>{{ $member->gender }}</td>
-                                    <td><a class='btn btn-success' href="{{ route('printUser', ['id'=>$member->profileId]) }}">Print</a></td>
+                                    <td>
+                                        <a class='btn btn-success' href="{{ route('printUserId', ['id'=>$member->profileId]) }}">Print ID</a>
+                                        <a class='btn btn-success' href="{{ route('printUserQr', ['id'=>$member->profileId]) }}">Print QR Code</a>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -92,7 +95,7 @@
              "dom": '<"toolbar">frtip'
          });
         // $('<button id="refresh">Print</button>').appendTo('div.dataTables_filter');
-        $("div.toolbar").html("<button class='btn btn-success printSelected'>Print QR Code</button>");
+        $("div.toolbar").html("<a href='{{ url('admin/kyc/new') }}' class='btn btn-success'>New</a>  <button class='btn btn-primary printSelected'>Print QR Code</button>");
 
          // Handle click on checkbox
        $('#example tbody').on('click', 'input[type="checkbox"]', function(e){

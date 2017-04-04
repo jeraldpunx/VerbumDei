@@ -151,10 +151,7 @@ class ClientController extends Controller
 				->asJson()
 				->get();
 			if($response->success) {
-				echo '<pre>';
-		        print_r($response);
-		        echo '</pre>';
-				// return redirect()->back()->with('response',$response);
+				return redirect()->back()->with('response',$response);
 			} else {
 				return redirect()->back()->with('response',$response);
 			}

@@ -22,7 +22,10 @@
                                 <td>{{ $attendee->firstname . " " . $attendee->lastname }}</td>
                                 <td>&#8369;{{ $attendee->ilUnitPrice }}</td>
                                 <td></td>
-                                <td><a class='btn btn-success' href="{{ route('printUser', ['id'=>$attendee->profileId]) }}">Print</a></td>
+                                <td>
+                                    <a class='btn btn-success' href="{{ route('printUserId', ['id'=>$attendee->profileId]) }}">Print ID</a>
+                                    <a class='btn btn-success' href="{{ route('printUserQr', ['id'=>$attendee->profileId]) }}">Print QR Code</a>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

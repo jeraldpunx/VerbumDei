@@ -26,8 +26,46 @@ class AdminController extends Controller
             return "Unauthorized Page!";
     }
 
+    public function newkyc()
+    {
+        return view('kyc.new');
+    }
 
-    public function print($profileId)
+    public function postNewKYC()
+    {
+        $inputs = Input::all();
+        $beneficiaries = [];
+        foreach ($inputs['name'] as $key => $value) {
+                array_push($beneficiaries, [
+                    'name'=>$value, 
+                    'birthDate'=>$inputs['birthDate'][$key],
+                    'relationship'=>$inputs['relationship'][$key]
+                ]);
+            }
+
+        unset($inputs['name']);
+        unset($inputs['birthDate']);
+        unset($inputs['relationship']);
+        unset($inputs['_token']);
+        $inputs['beneficiaries'] = json_encode($beneficiaries);
+
+        $user = Curl::to('http://52.74.115.167:703/index.php')
+            ->withData(array_merge([ 'mtmaccess_api' => 'true',
+                          'transaction' => '20001' ], $inputs))
+            ->asJson()
+            ->get();
+
+        return redirect()->back()->withInput()->with('response',$user);
+
+        // if($user->success) {
+        //     return view('kyc.list', ['user'=>$user]);
+        // }
+        // else
+        //     return "Unauthorized Page!";
+    }
+
+
+    public function printUserId($profileId)
     {
         $user = Curl::to('http://52.74.115.167:703/index.php')
             ->withData([ 'mtmaccess_api' => 'true',
@@ -48,6 +86,60 @@ class AdminController extends Controller
             $pdf->loadView('layouts.badge', ['user'=>$data])->setPaper('a4', 'landscape');
             return $pdf->stream();
             // return view('layouts.badge', ['user'=>$data]);
+        } else
+            return "Unauthorized Page!";
+    }
+
+    public function printUserQr($profileId)
+    {
+        $users = Curl::to('http://52.74.115.167:703/index.php')
+            ->withData([ 'mtmaccess_api' => 'true',
+                          'transaction' => '20007',
+                          'profileIds'   => [$profileId] ])
+            ->asJson()
+            ->get();
+            
+        if($users->success) {
+            $data = [];
+            if(count($users->result) == 1) $users->result = [$users->result];
+            foreach ($users->result as $user) {
+                array_push($data, [
+                        'name'=>$user->lastname . ', ' . $user->firstname,
+                        'qrcode'=>DNS2D::getBarcodePNG($user->vdmfa_id, "QRCODE")
+                    ]);
+            }
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('layouts.qr', ['users'=>$data])->setPaper('a4', 'landscape');
+            return $pdf->stream();
+            // return view('layouts.qr', ['users'=>$data]);
+        } else
+            return "Unauthorized Page!";
+    }
+
+    public function printAllUserQr()
+    {
+        $users = Curl::to('http://52.74.115.167:703/index.php')
+            ->withData([ 'mtmaccess_api' => 'true',
+                          'transaction' => '20007',
+                          'profileIds'   => Input::get('id') ])
+            ->asJson()
+            ->get();
+
+        if($users->success) {
+            $data = [];
+            if(count($users->result) == 1) $users->result = [$users->result];
+            foreach ($users->result as $user) {
+                array_push($data, [
+                        'name'=>$user->lastname . ', ' . $user->firstname,
+                        'qrcode'=>DNS2D::getBarcodePNG($user->vdmfa_id, "QRCODE")
+                    ]);
+            }
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('layouts.qr', ['users'=>$data])->setPaper('a4', 'landscape');
+            return $pdf->stream();
+            // return view('layouts.qr', ['users'=>$data]);
         } else
             return "Unauthorized Page!";
     }
