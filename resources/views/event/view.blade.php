@@ -6,6 +6,10 @@
         <div class="col-md-12">
             <h3><a href="{{ url('event') }}">Events</a> / {{ $event->iiName }}</h3>
             <hr>
+            <div id="error-message" @if(!session()->has('response'))style="display: none;"@endif class="alert @if(session()->has('response')){{ session('response')->success ? "alert-success" : "alert-danger" }}@endif fade in">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <span class="message">@if(session()->has('response')){{ session('response')->msg }}@endif</span>
+            </div>
             <div class="col-md-9"> 
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -28,7 +32,14 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <center>
-                            <a class="btn btn-success btn-block">JOIN</a>
+                            @if(Session::get('username'))
+                            <form method="POST" action="{{ route('joinEvent', $event->iiId) }}">
+                                {{ csrf_field() }}
+                                <button type="submit" class="btn btn-success btn-block">JOIN EVENT</button>
+                            </form>
+                            @else
+                            <a class="btn btn-success btn-block" href="{{url('login')}}">JOIN EVENT</a>
+                            @endif
                         </center>
                     </div>
                 </div>
@@ -39,46 +50,4 @@
 @endsection
 
 @section('script')
-<script type="text/javascript">
-    $(document).ready(function() {
-        var kycId = {{ Route::input('id') }};
-// http://52.74.115.167:703/index.php?mtmaccess_api=true&transaction=20020&userName=test6&imei=359861054037926
-        $.ajax({
-          type: 'GET',
-          url: 'http://52.74.115.167:703/index.php',
-          crossDomain: true,
-          data: {
-            mtmaccess_api: true, 
-            transaction: 20020, 
-            userName: "{{Session::get('user')}}",
-            passWord: "{{Session::get('password')}}"
-          },
-          cache: false,
-          success: function(data) {
-            var data = JSON.parse(data);
-            if(data.success) {
-                console.log(data.result);
-                $('#example').dataTable( {
-                    "aaData": data.result,
-                    'columns': [
-                    { "data": null, render: function ( data, type, row ) {
-                            return data.lastname+', '+data.firstname+' '+data.middlename;
-                        }
-                    },
-                    { "data": null, render: function ( data, type, row ) {
-                            return formatDate(data.birthDate);
-                        } 
-                    },
-                    { "data": "gender" },
-                    { "data": null, render: function ( data, type, row) {
-                            return "<a class='btn btn-success' href='"+data.profileId+"'>Print</a>";
-                        }
-                    }
-                    ],
-                } );
-            }
-          }
-        });       
-    } );
-</script>
 @endsection

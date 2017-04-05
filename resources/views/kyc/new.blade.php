@@ -827,10 +827,5 @@
             }));
         });
     });
-
-    
-
-
-
 </script>
 @endsection

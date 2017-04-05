@@ -211,46 +211,5 @@
                 else $("#email").parents('.form-group').removeClass('has-error');
         }
     });
-
-//     $(document).ready(function() {
-//         var kycId = {{ Route::input('id') }};
-// // http://52.74.115.167:703/index.php?mtmaccess_api=true&transaction=20020&userName=test6&imei=359861054037926
-//         $.ajax({
-//           type: 'GET',
-//           url: 'http://52.74.115.167:703/index.php',
-//           crossDomain: true,
-//           data: {
-//             mtmaccess_api: true, 
-//             transaction: 20020, 
-//             userName: "{{Session::get('user')}}",
-//             passWord: "{{Session::get('password')}}"
-//           },
-//           cache: false,
-//           success: function(data) {
-//             var data = JSON.parse(data);
-//             if(data.success) {
-//                 console.log(data.result);
-//                 $('#example').dataTable( {
-//                     "aaData": data.result,
-//                     'columns': [
-//                     { "data": null, render: function ( data, type, row ) {
-//                             return data.lastname+', '+data.firstname+' '+data.middlename;
-//                         }
-//                     },
-//                     { "data": null, render: function ( data, type, row ) {
-//                             return formatDate(data.birthDate);
-//                         } 
-//                     },
-//                     { "data": "gender" },
-//                     { "data": null, render: function ( data, type, row) {
-//                             return "<a class='btn btn-success' href='"+data.profileId+"'>Print</a>";
-//                         }
-//                     }
-//                     ],
-//                 } );
-//             }
-//           }
-//         });       
-//     } );
 </script>
 @endsection

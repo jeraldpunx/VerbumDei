@@ -5,6 +5,10 @@
 	<div class="row">
 		<div class="col-md-12 col-md-offset-">
 			<h1>Attendees</h1>
+			<div id="error-message" @if(!session()->has('response'))style="display: none;"@endif class="alert @if(session()->has('response')){{ session('response')->success ? "alert-success" : "alert-danger" }}@endif fade in">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <span class="message">@if(session()->has('response')){{ session('response')->msg }}@endif</span>
+            </div>
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<form id="frm-example" action="{{route('printAllUserQr')}}" method="GET">
@@ -26,8 +30,8 @@
 									<td>&#8369;{{ $attendee->ilUnitPrice }}</td>
 									<td></td>
 									<td>
-										<a class='btn btn-success' href="{{ route('printUserId', ['id'=>$attendee->profileId]) }}">Print ID</a>
-										<a class='btn btn-success' href="{{ route('printUserQr', ['id'=>$attendee->profileId]) }}">Print QR Code</a>
+										<a class='btn btn-success' href="{{ route('printUserId', ['id'=>$attendee->profileId]) }}"><span class="fa fa-id-card"></span></a>
+										<a class='btn btn-success' href="{{ route('printUserQr', ['id'=>$attendee->profileId]) }}"><span class="fa fa-qrcode"></span></a>
 									</td>
 								</tr>
 							@endforeach
@@ -44,7 +48,8 @@
 <div id="myModal" class="modal fade" role="dialog">
 	<div class="modal-dialog">
 		<!-- Modal content-->
-		<form method="GET">
+		<form method="GET" action="{{ route('registerMember', $eventId) }}">
+			{{ csrf_field() }}
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -54,8 +59,8 @@
 
 					<div class="col-md-8 col-md-offset-2">
 						<center>
-							<label for="existing">Existing Member</label>
-							<select class="selectpicker" id="existing" name="existing" data-show-subtext="true" data-live-search="true">
+							<label for="memberId">Existing Member</label>
+							<select class="selectpicker" id="memberId" name="memberId" data-show-subtext="true" data-live-search="true">
 								<option value="">-Select Member-</option>
 								@foreach($members as $member)
 									<option value="{{ $member->profileId }}" data-subtext="{{$member->firstname." ".$member->middlename}}">{{$member->lastname}}</option>

@@ -14,6 +14,10 @@
     <div class="row">
         <div class="col-md-12">
             <h3>Know Your Client/Members</h3>
+            <div id="error-message" @if(!session()->has('response'))style="display: none;"@endif class="alert @if(session()->has('response')){{ session('response')->success ? "alert-success" : "alert-danger" }}@endif fade in">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <span class="message">@if(session()->has('response')){{ session('response')->msg }}@endif</span>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <form id="frm-example" action="{{route('printAllUserQr')}}" method="GET">

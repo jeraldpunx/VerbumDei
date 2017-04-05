@@ -50,6 +50,68 @@ class ClientController extends Controller
 			return "Failed to load Page!";
 	}
 
+	public function joinEvent($eventId)
+	{
+		$user = Curl::to('http://52.74.115.167:703/index.php')
+			->withData([ 'mtmaccess_api' => 'true',
+				'transaction' => '20006',
+				'userName'  => Session::get('username') ])
+			->asJson()
+			->get();
+
+		$userProfile = $user->result;
+		echo $userProfile->firstname;
+		if($userProfile->firstname === NULL
+			|| $userProfile->middlename === NULL
+			|| $userProfile->lastname === NULL
+			|| $userProfile->motherMaidenName === NULL
+			|| $userProfile->gender === NULL
+			|| $userProfile->birthDate === NULL
+			|| $userProfile->birthPlace === NULL
+			|| $userProfile->nationality === NULL
+			|| $userProfile->maritalStatus === NULL
+			|| $userProfile->p_region === NULL
+			|| $userProfile->p_cityOrMunicipal === NULL
+			|| $userProfile->p_streetAddress === NULL) {
+			$tempObject = new stdClass;
+	        $tempObject->success = false;
+	        $tempObject->msg = 'Please fill up required files before joining event!';
+	        return redirect()->route('profile')->withInput()->with('response',$tempObject);
+		} else {
+			$event = Curl::to('http://52.74.115.167:703/index.php')
+            ->withData([ 'mtmaccess_api' => 'true',
+                          'transaction' => '20033',
+                          'eventId'    => $eventId ])
+            ->asJson()
+            ->get();
+
+	        $data = [ 'mtmaccess_api'   => true,
+	              'transaction'     => '24013',
+	              'userName'        => Session::get('username'),
+	              'passWord'        => Session::get('password'),
+	              'amount'          => $event->result->iiUnitPrice,
+	              'transDesc'       => $event->result->iiName . (($event->result->iiDesc) ? "({$event->result->iiDesc})" : ""),
+	              'memberId'        => $user->result->profileId_fk,
+	              'totalQty'        => 1,
+	              'items'           => json_encode([[ "qty"           =>  1,
+	                                      "isInv"         =>  1,
+	                                      "code"          =>  $event->result->iiName,
+	                                      "totalPrice"    =>  $event->result->iiUnitPrice,
+	                                      "price"         =>  $event->result->iiUnitPrice,
+	                                      "id"            =>  $event->result->iiId ]])
+	            ];
+
+	        
+
+	        $submitReg = Curl::to('http://52.74.115.167:703/index.php')
+	        ->withData($data)
+	        ->asJson()
+	        ->get();
+		}
+
+        return redirect()->back()->withInput()->with('response',$submitReg);
+	}
+
 	public function getProfile()
 	{
 		$user = Curl::to('http://52.74.115.167:703/index.php')
@@ -62,8 +124,8 @@ class ClientController extends Controller
    //      print_r($user);
    //      echo '</pre>';
 		if($user->success) {
-			// if((count($user->result->beneficiaries) == count($user->result->beneficiaries, COUNT_RECURSIVE)) && count($user->result->beneficiaries) > 0)
-			// 	$user->result->beneficiaries = [$user->result->beneficiaries];
+			if((count($user->result->beneficiaries) == count($user->result->beneficiaries, COUNT_RECURSIVE)) && count($user->result->beneficiaries) > 0)
+				$user->result->beneficiaries = [$user->result->beneficiaries];
 
 			// if (count($user->result->beneficiaries) == count($user->result->beneficiaries, COUNT_RECURSIVE)) $user->result->beneficiaries = [$user->result->beneficiaries];
 			return view('profile.edit', ['user'=>$user->result]);

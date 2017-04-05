@@ -26,7 +26,7 @@
                             <td>{{ $event->iiDesc }}</td>
                             <td>{{ $event->iiUnitPrice }}</td>
                             <td>
-                                <a class='btn btn-primary' href="{{ route('viewEventAttendees', [$event->id]) }}">View Attendees</a>
+                                <a class='btn btn-primary' href="{{ route('viewEventAttendees', [$event->iiId]) }}">View Attendees</a>
                             </td>
                         </tr>
 

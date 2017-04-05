@@ -9,6 +9,7 @@ use Input;
 use DNS2D;
 use App;
 use Config;
+use stdClass;
 ini_set('max_execution_time', 180);
 
 class AdminController extends Controller
@@ -123,7 +124,10 @@ class AdminController extends Controller
     public function printAllUserQr()
     {
         if(!Input::get('id')) {
-            return redirect()->back();
+            $tempObject = new stdClass;
+            $tempObject->success = false;
+            $tempObject->msg = 'Please select atleast One member!';
+            return redirect()->back()->withInput()->with('response',$tempObject);
         }
         $users = Curl::to('http://52.74.115.167:703/index.php')
             ->withData([ 'mtmaccess_api' => 'true',
@@ -163,14 +167,14 @@ class AdminController extends Controller
             if(count($events->result) == 1) $events->result = [$events->result];
             // if (count($events->result) == count($events->result, COUNT_RECURSIVE)) $events->result = [$events->result];
              
-	        return view('event.list', ['events'=>$events->result]);
-	    } else {
+            return view('event.list', ['events'=>$events->result]);
+        } else {
             return view('event.list', ['events'=>[]]);
         }
     }
 
     public function event($eventId) {
-    	return view('event.view');
+        return view('event.view');
     }
 
     public function eventAttendees($eventId)
@@ -181,20 +185,56 @@ class AdminController extends Controller
             ->asJson()
             ->get();
 
-
-    	$attendees = Curl::to('http://52.74.115.167:703/index.php')
-	        ->withData([ 'mtmaccess_api' => 'true',
-	                      'transaction' => '24012',
-	                      'iiId'    => '50' ])
-	        ->asJson()
-	        ->get();
+        $attendees = Curl::to('http://52.74.115.167:703/index.php')
+            ->withData([ 'mtmaccess_api' => 'true',
+                          'transaction' => '24012',
+                          'eventId'    => $eventId ])
+            ->asJson()
+            ->get();
 
 	    if($attendees->success) {
 	        // if (count($attendees->result) == count($attendees->result, COUNT_RECURSIVE)) $attendees->result = [$attendees->result];
-	        return view('event.attendees', ['attendees'=>$attendees->result, 'members'=>$members->result]);
+            if(count($attendees->result) == 1) $attendees->result = [$attendees->result];
+	        return view('event.attendees', ['eventId'=>$eventId, 'attendees'=>$attendees->result, 'members'=>$members->result]);
 	    } else if($attendees->success == null) {
-            return view('event.attendees', ['attendees'=>[], 'members'=>$members->result]);
+            return view('event.attendees', ['eventId'=>$eventId, 'attendees'=>[], 'members'=>$members->result]);
         }
+    }
+
+    public function registerMember($eventId)
+    {
+        $event = Curl::to('http://52.74.115.167:703/index.php')
+            ->withData([ 'mtmaccess_api' => 'true',
+                          'transaction' => '20033',
+                          'eventId'    => $eventId ])
+            ->asJson()
+            ->get();
+
+        $data = [ 'mtmaccess_api'   => true,
+              'transaction'     => '24013',
+              'userName'        => Session::get('username'),
+              'passWord'        => Session::get('password'),
+              'amount'          => $event->result->iiUnitPrice,
+              'transDesc'       => $event->result->iiName . "({$event->result->iiDesc})",
+              'memberId'        => Input::get('memberId'),
+              'totalQty'        => 1,
+              'items'           => json_encode([[ "qty"           =>  1,
+                                      "isInv"         =>  1,
+                                      "code"          =>  $event->result->iiName,
+                                      "totalPrice"    =>  $event->result->iiUnitPrice,
+                                      "price"         =>  $event->result->iiUnitPrice,
+                                      "id"            =>  $event->result->iiId ]])
+            ];
+
+        
+
+        $submitReg = Curl::to('http://52.74.115.167:703/index.php')
+        ->withData($data)
+        ->asJson()
+        ->get();
+
+        return redirect()->back()->withInput()->with('response',$submitReg);
+
     }
 
     
