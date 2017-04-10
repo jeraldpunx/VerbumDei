@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
     <link href="{{ url('css/style.css') }}" rel="stylesheet" >
     <link href="{{ url('css/myStyle.css') }}" rel="stylesheet" >
+    <script src="{{ url('js/jquery-3.2.0.min.js') }}"></script>
     
     @yield('style')
     
@@ -28,71 +29,118 @@
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
+
+        $(window).scroll(function() {
+          if ($(document).scrollTop() > 50) {
+            $('nav').addClass('shrink');
+          } else {
+            $('nav').removeClass('shrink');
+          }
+        });
     </script>
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
-            <div class="container">
-                <div class="navbar-header">
+    <nav class="navbar navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-left" href="{{ url('/') }}"><img src="{{ url('images/logo.png') }}"></a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav pull-right">
+            @if (Session::has('username') && Session::get('usertype') == 'MERCHANT')
+                <li><a href="{{ url('admin/event') }}">Events</a></li>
+                <li><a href="{{ url('admin/kyc') }}">Members</a></li>
+            @elseif (Session::has('username') && Session::get('usertype') == 'CLIENT')
+                <li><a href="{{ url('event') }}">Events</a></li>
+            @endif
 
-                    <!-- Collapsed Hamburger -->
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-
-                    <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+            @if (!Session::has('username'))
+                <li><a href="{{ url('/login') }}">Login</a></li>
+                <li><a href="{{ url('/register') }}">Register</a></li>
+            @else
+                <li class="dropdown">
+                    <a href="#" style="text-transform: uppercase;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        {{ Session::get('username') }} <span class="caret"></span>
                     </a>
-                </div>
 
-                <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="nav navbar-nav">
-                        @if (Session::has('username') && Session::get('usertype') == 'MERCHANT')
-                            <li><a href="{{ url('admin/event') }}">Events</a></li>
-                            <li><a href="{{ url('admin/kyc') }}">Members</a></li>
-                        @elseif (Session::has('username') && Session::get('usertype') == 'CLIENT')
-                            <li><a href="{{ url('event') }}">Events</a></li>
-                        @endif
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            @if(Session::get('usertype') == 'CLIENT')<a href="{{ url('profile') }}">Profile</a>@endif
+                            <a href="{{ url('/logout') }}">Logout</a>
+                        </li>
                     </ul>
+                </li>
+            @endif
+<!--             <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Page</a></li>
+            <li><a href="#">Link</a></li> -->
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right">
-                        <!-- Authentication Links -->
-                        @if (!Session::has('username'))
-                            <li><a href="{{ url('/login') }}">Login</a></li>
-                            <li><a href="{{ url('/register') }}">Register</a></li>
-                        @else
-                            <li class="dropdown">
-                                <a href="#" style="text-transform: uppercase;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Session::get('username') }} <span class="caret"></span>
-                                </a>
+           
 
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        @if(Session::get('usertype') == 'CLIENT')<a href="{{ url('profile') }}">Profile</a>@endif
-                                        <a href="{{ url('/logout') }}">Logout</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
+    <!-- <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
             </div>
-        </nav>
 
-        @yield('content')
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    @if (Session::has('username') && Session::get('usertype') == 'MERCHANT')
+                        <li><a href="{{ url('admin/event') }}">Events</a></li>
+                        <li><a href="{{ url('admin/kyc') }}">Members</a></li>
+                    @elseif (Session::has('username') && Session::get('usertype') == 'CLIENT')
+                        <li><a href="{{ url('event') }}">Events</a></li>
+                    @endif
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    @if (!Session::has('username'))
+                        <li><a href="{{ url('/login') }}">Login</a></li>
+                        <li><a href="{{ url('/register') }}">Register</a></li>
+                    @else
+                        <li class="dropdown">
+                            <a href="#" style="text-transform: uppercase;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                {{ Session::get('username') }} <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    @if(Session::get('usertype') == 'CLIENT')<a href="{{ url('profile') }}">Profile</a>@endif
+                                    <a href="{{ url('/logout') }}">Logout</a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+                </ul>
+            </div>
+        </div>
+    </nav> -->
+
+    @yield('content')
         
-    </div>
 
     <!-- Scripts -->
     <!-- <script src="{{ url('js/app.js') }}"></script> -->
-    <script src="{{ url('js/jquery-3.2.0.min.js') }}"></script>
+    <!-- <script src="{{ url('js/jquery-3.2.0.min.js') }}"></script> -->
     <script src="{{ url('js/bootstrap.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
     <script src="{{ url('js/myScript.js') }}"></script>
@@ -101,6 +149,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js">
     <script type="text/javascript">
         $(document).ready(function(){
+            
+            
             if(localStorage.getItem("communities") === null) {
                 $.ajax({
                   type: 'GET',

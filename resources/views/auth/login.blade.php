@@ -4,8 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            <center><h1>LOGIN</h1></center>
+            <hr>
             <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
                 <div class="panel-body">
                     <div id="error-message" @if(!session()->has('response'))style="display: none;"@endif class="alert alert-danger fade in">
                         <a href="#" class="close" data-dismiss="alert">&times;</a>

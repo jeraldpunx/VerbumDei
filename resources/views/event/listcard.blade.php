@@ -17,7 +17,7 @@
                     
                     <div class="card-content">
                         <span class="card-title">{{$event->iiName}}{{($event->iiDesc) ? "({$event->iiDesc})" : ""}}</span>
-                        <span>₱{{$event->iiUnitPrice}}</span>                    
+                        <p>₱{{$event->iiUnitPrice}}</p>                    
                     </div><!-- card content -->
                     </a>
                 </div>

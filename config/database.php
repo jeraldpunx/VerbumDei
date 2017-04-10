@@ -45,6 +45,8 @@ return [
     */
 
     'connections' => [
+        'curlIp' => env('CURL_IP', ''),
+
 
         'sqlite' => [
             'driver' => 'sqlite',

@@ -10,18 +10,19 @@ use DNS2D;
 use App;
 use Config;
 use stdClass;
-ini_set('max_execution_time', 180);
+ini_set('max_execution_time', 0);
 
 class AdminController extends Controller
 {
 	public function kyc()
 	{
-        $members = Curl::to('http://52.74.115.167:703/index.php')
+        $members = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20020' ])
             ->asJson()
             ->get();
 
+        if(count($members->result) == 1) $members->result = [$members->result];
         if($members->success)
             return view('kyc.list', ['members'=>$members]);
         else
@@ -38,28 +39,33 @@ class AdminController extends Controller
     public function postNewKYC()
     {
         $inputs = Input::all();
-        $beneficiaries = [];
-        foreach ($inputs['name'] as $key => $value) {
-                array_push($beneficiaries, [
-                    'name'=>$value, 
-                    'birthDate'=>$inputs['birthDate'][$key],
-                    'relationship'=>$inputs['relationship'][$key]
-                ]);
-            }
 
-        unset($inputs['name']);
-        unset($inputs['birthDate']);
-        unset($inputs['relationship']);
-        unset($inputs['_token']);
-        $inputs['beneficiaries'] = json_encode($beneficiaries);
+        echo "<pre>";
+        print_r($inputs);
+        echo "</pre>";
 
-        $user = Curl::to('http://52.74.115.167:703/index.php')
-            ->withData(array_merge([ 'mtmaccess_api' => 'true',
-                          'transaction' => '20001' ], $inputs))
-            ->asJson()
-            ->get();
+        // $beneficiaries = [];
+        // foreach ($inputs['name'] as $key => $value) {
+        //         array_push($beneficiaries, [
+        //             'name'=>$value, 
+        //             'birthDate'=>$inputs['birthDate'][$key],
+        //             'relationship'=>$inputs['relationship'][$key]
+        //         ]);
+        //     }
 
-        return redirect()->back()->withInput()->with('response',$user);
+        // unset($inputs['name']);
+        // unset($inputs['birthDate']);
+        // unset($inputs['relationship']);
+        // unset($inputs['_token']);
+        // $inputs['beneficiaries'] = json_encode($beneficiaries);
+
+        // $user = Curl::to(Config('database.connections.curlIp'))
+        //     ->withData(array_merge([ 'mtmaccess_api' => 'true',
+        //                   'transaction' => '20001' ], $inputs))
+        //     ->asJson()
+        //     ->get();
+
+        // return redirect()->back()->withInput()->with('response',$user);
 
         // if($user->success) {
         //     return view('kyc.list', ['user'=>$user]);
@@ -71,32 +77,42 @@ class AdminController extends Controller
 
     public function printUserId($profileId)
     {
-        $user = Curl::to('http://52.74.115.167:703/index.php')
+        $users = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
-                          'transaction' => '20006',
-                          'profileId'   => $profileId ])
+                          'transaction' => '20007',
+                          'profileIds'   => [$profileId] ])
             ->asJson()
             ->get();
 
-        if($user->success) {
-            $data = [
-                'picture'=>($user->result->p_picture) ? "http://52.74.115.167:703/" . $user->result->p_picture : public_path() . "/images/temppicture.jpg",
-                'firstname'=>$user->result->firstname,
-                'lastname'=>$user->result->lastname,
-                'qrcode'=>DNS2D::getBarcodePNG($user->result->vdmfa_id, "QRCODE")
-            ];
+        if($users->success) {
+            $data = [];
+            if(count($users->result) == 1) $users->result = [$users->result];
+            foreach ($users->result as $user) {
+                array_push($data, [
+                        'name'=>$user->lastname . ', ' . $user->firstname,
+                        'qrcode'=>DNS2D::getBarcodePNG($user->vdmfa_id, "QRCODE",95,95,array(0,0,0))
+                    ]);
+            }
+
+            // $data = [
+            //     'picture'=>($users->result->p_picture) ? "http://52.74.115.167:703/" . $users->result->p_picture : public_path() . "/images/temppicture.jpg",
+            //     'firstname'=>$users->result->firstname,
+            //     'lastname'=>$users->result->lastname,
+            //     'qrcode'=>DNS2D::getBarcodePNG($users->result->vdmfa_id, "QRCODE",95,95,array(255,255,255))
+            // ];
 
             $pdf = App::make('dompdf.wrapper');
-            $pdf->loadView('layouts.badge', ['user'=>$data])->setPaper('a4', 'landscape');
+            // // $pdf->loadView('layouts.badge', ['user'=>$data])->setPaper('a4', 'landscape');
+            $pdf->loadView('layouts.id', ['users'=>$data])->setPaper('a4', 'portrait');
             return $pdf->stream();
-            // return view('layouts.badge', ['user'=>$data]);
+            return view('layouts.badge', ['user'=>$data]);
         } else
             return "Unauthorized Page!";
     }
 
     public function printUserQr($profileId)
     {
-        $users = Curl::to('http://52.74.115.167:703/index.php')
+        $users = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20007',
                           'profileIds'   => [$profileId] ])
@@ -129,7 +145,7 @@ class AdminController extends Controller
             $tempObject->msg = 'Please select atleast One member!';
             return redirect()->back()->withInput()->with('response',$tempObject);
         }
-        $users = Curl::to('http://52.74.115.167:703/index.php')
+        $users = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20007',
                           'profileIds'   => Input::get('id') ])
@@ -154,9 +170,41 @@ class AdminController extends Controller
             return "Unauthorized Page!";
     }
 
+    public function printAllUserBadge()
+    {
+        if(!Input::get('id')) {
+            $tempObject = new stdClass;
+            $tempObject->success = false;
+            $tempObject->msg = 'Please select atleast One member!';
+            return redirect()->back()->withInput()->with('response',$tempObject);
+        }
+        $users = Curl::to(Config('database.connections.curlIp'))
+            ->withData([ 'mtmaccess_api' => 'true',
+                          'transaction' => '20007',
+                          'profileIds'   => Input::get('id') ])
+            ->asJson()
+            ->get();
+
+        if($users->success) {
+            $data = [];
+            if(count($users->result) == 1) $users->result = [$users->result];
+            foreach ($users->result as $user) {
+                array_push($data, [
+                        'name'=>$user->lastname . ', ' . $user->firstname,
+                        'qrcode'=>DNS2D::getBarcodePNG($user->vdmfa_id, "QRCODE",95,95,array(0,0,0))
+                    ]);
+            }
+            // $pdf = App::make('dompdf.wrapper');
+            // $pdf->loadView('layouts.id', ['users'=>$data])->setPaper('a4', 'portrait');
+            // return $pdf->stream();
+            return view('layouts.id', ['users'=>$data]);
+        } else
+            return "Unauthorized Page!";
+    }
+
     public function events()
     {
-    	$events = Curl::to('http://52.74.115.167:703/index.php')
+    	$events = Curl::to(Config('database.connections.curlIp'))
 	        ->withData([ 'mtmaccess_api' => 'true',
 	                      'transaction' => '20030',
 	                      'branchId'    => Session::get('branchId') ])
@@ -179,13 +227,13 @@ class AdminController extends Controller
 
     public function eventAttendees($eventId)
     {
-        $members = Curl::to('http://52.74.115.167:703/index.php')
+        $members = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20020' ])
             ->asJson()
             ->get();
 
-        $attendees = Curl::to('http://52.74.115.167:703/index.php')
+        $attendees = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '24012',
                           'eventId'    => $eventId ])
@@ -203,7 +251,7 @@ class AdminController extends Controller
 
     public function registerMember($eventId)
     {
-        $event = Curl::to('http://52.74.115.167:703/index.php')
+        $event = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20033',
                           'eventId'    => $eventId ])
@@ -228,16 +276,13 @@ class AdminController extends Controller
 
         
 
-        $submitReg = Curl::to('http://52.74.115.167:703/index.php')
+        $submitReg = Curl::to(Config('database.connections.curlIp'))
         ->withData($data)
         ->asJson()
         ->get();
 
         return redirect()->back()->withInput()->with('response',$submitReg);
-
     }
-
-    
 }
 
 

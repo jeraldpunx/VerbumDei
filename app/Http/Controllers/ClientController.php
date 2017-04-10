@@ -9,13 +9,14 @@ use Input;
 use DNS2D;
 use App;
 use stdClass;
-ini_set('max_execution_time', 180);
+use Config;
+ini_set('max_execution_time', 0);
 
 class ClientController extends Controller
 {
 	public function events()
 	{
-		$events = Curl::to('http://52.74.115.167:703/index.php')
+		$events = Curl::to(Config('database.connections.curlIp'))
 		->withData([ 'mtmaccess_api' => 'true',
 						'transaction' => '20030',
 						'branchId'    => Session::get('branchId')
@@ -35,7 +36,7 @@ class ClientController extends Controller
 
 	public function event($eventId)
 	{
-		$event = Curl::to('http://52.74.115.167:703/index.php')
+		$event = Curl::to(Config('database.connections.curlIp'))
 		->withData([ 'mtmaccess_api' => 'true',
 			'transaction' => '20033',
 			'eventId'  => $eventId ])
@@ -52,7 +53,7 @@ class ClientController extends Controller
 
 	public function joinEvent($eventId)
 	{
-		$user = Curl::to('http://52.74.115.167:703/index.php')
+		$user = Curl::to(Config('database.connections.curlIp'))
 			->withData([ 'mtmaccess_api' => 'true',
 				'transaction' => '20006',
 				'userName'  => Session::get('username') ])
@@ -60,7 +61,6 @@ class ClientController extends Controller
 			->get();
 
 		$userProfile = $user->result;
-		echo $userProfile->firstname;
 		if($userProfile->firstname === NULL
 			|| $userProfile->middlename === NULL
 			|| $userProfile->lastname === NULL
@@ -78,7 +78,7 @@ class ClientController extends Controller
 	        $tempObject->msg = 'Please fill up required files before joining event!';
 	        return redirect()->route('profile')->withInput()->with('response',$tempObject);
 		} else {
-			$event = Curl::to('http://52.74.115.167:703/index.php')
+			$event = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20033',
                           'eventId'    => $eventId ])
@@ -101,20 +101,23 @@ class ClientController extends Controller
 	                                      "id"            =>  $event->result->iiId ]])
 	            ];
 
+	          echo http_build_query($data);
+
 	        
 
-	        $submitReg = Curl::to('http://52.74.115.167:703/index.php')
-	        ->withData($data)
-	        ->asJson()
-	        ->get();
+	        // $submitReg = Curl::to(Config('database.connections.curlIp'))
+	        // ->withData($data)
+	        // ->asJson()
+	        // ->get();
+	        // return redirect()->back()->withInput()->with('response',$submitReg);
 		}
 
-        return redirect()->back()->withInput()->with('response',$submitReg);
 	}
 
 	public function getProfile()
 	{
-		$user = Curl::to('http://52.74.115.167:703/index.php')
+		$regions = json_decode(Config::get('constants.regions'));
+		$user = Curl::to(Config('database.connections.curlIp'))
 			->withData([ 'mtmaccess_api' => 'true',
 				'transaction' => '20006',
 				'userName'  => Session::get('username') ])
@@ -128,14 +131,14 @@ class ClientController extends Controller
 				$user->result->beneficiaries = [$user->result->beneficiaries];
 
 			// if (count($user->result->beneficiaries) == count($user->result->beneficiaries, COUNT_RECURSIVE)) $user->result->beneficiaries = [$user->result->beneficiaries];
-			return view('profile.edit', ['user'=>$user->result]);
+			return view('profile.edit', ['regions'=>$regions, 'user'=>$user->result]);
 		} else
 			return "Unauthorized Page!";
 	}
 
 	public function postProfilePersonal($profileId)
 	{
-		$response = Curl::to('http://52.74.115.167:703/index.php')
+		$response = Curl::to(Config('database.connections.curlIp'))
 			->withData([ 'mtmaccess_api' => 'true',
 				'transaction' => '20005',
 				'profileId' => $profileId,
@@ -164,7 +167,7 @@ class ClientController extends Controller
 
 	public function postProfileContact($profileId)
 	{
-		$response = Curl::to('http://52.74.115.167:703/index.php')
+		$response = Curl::to(Config('database.connections.curlIp'))
 			->withData([ 'mtmaccess_api' => 'true',
 				'transaction' => '20005',
 				'profileId' => $profileId,
@@ -204,7 +207,7 @@ class ClientController extends Controller
 				]);
 			}
 
-			$response = Curl::to('http://52.74.115.167:703/index.php')
+			$response = Curl::to(Config('database.connections.curlIp'))
 				->withData([ 'mtmaccess_api' => 'true',
 					'transaction' => '20005',
 					'profileId' => $profileId,

@@ -64,7 +64,12 @@
                                     <div class="form-group">
                                         <label for="birthdate" class="col-md-4 control-label">Birthdate*</label>
                                         <div class="col-md-6">
-                                            <input id="birthdate" type="text" class="form-control" name="birthdate" value="{{ (isset($user))  ? Carbon\Carbon::parse($user->birthDate)->format('Y-m-d') : '' }}" required autofocus>
+                                            <div class="input-group date" data-provide="datepicker">
+                                                <input type="text" class="form-control" id="birthdate" name="birthdate" }}" value="{{ (isset($user))  ? Carbon\Carbon::parse($user->birthDate)->format('m/d/Y') : '' }}">
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-th"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -153,28 +158,39 @@
                                     <div class="form-group">
                                         <label for="p_region" class="col-md-4 control-label">Region*</label>
                                         <div class="col-md-6">
-                                            <input id="p_region" type="text" class="form-control" name="p_region" value="{{ (isset($user))  ? $user->p_region : '' }}" autofocus>
+                                            <select class="form-control" id="p_region" name="p_region">
+                                                <option value="">-Select Region-</option>
+                                                @foreach($regions as $key => $region)
+                                                    <option value="{{ $key }}">{{ $key }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="p_province" class="col-md-4 control-label">Province*</label>
                                         <div class="col-md-6">
-                                            <input id="p_province" type="text" class="form-control" name="p_province" value="{{ (isset($user))  ? $user->p_province : '' }}" autofocus>
+                                            <select class="form-control" id="p_province" name="p_province">
+                                                <option value="">-Select Province-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="p_cityOrMunicipal" class="col-md-4 control-label">City or Municipal*</label>
                                         <div class="col-md-6">
-                                            <input id="p_cityOrMunicipal" type="text" class="form-control" name="p_cityOrMunicipal" value="{{ (isset($user))  ? $user->p_cityOrMunicipal : '' }}" autofocus>
+                                            <select class="form-control" id="p_cityOrMunicipal" name="p_cityOrMunicipal">
+                                                <option value="">-Select Municipal-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="p_barangay" class="col-md-4 control-label">Barangay*</label>
                                         <div class="col-md-6">
-                                            <input id="p_barangay" type="text" class="form-control" name="p_barangay" value="{{ (isset($user))  ? $user->p_barangay : '' }}" autofocus>
+                                            <select class="form-control" id="p_barangay" name="p_barangay">
+                                                <option value="">-Select Barangay-</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -192,28 +208,39 @@
                                     <div class="form-group">
                                         <label for="h_region" class="col-md-4 control-label">Region</label>
                                         <div class="col-md-6">
-                                            <input id="h_region" type="text" class="form-control" name="h_region" value="{{ (isset($user))  ? $user->h_region : '' }}" autofocus>
+                                            <select class="form-control" id="p_region" name="p_region">
+                                                <option value="">-Select Region-</option>
+                                                @foreach($regions as $key => $region)
+                                                    <option value="{{ $key }}">{{ $key }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="h_province" class="col-md-4 control-label">Province</label>
                                         <div class="col-md-6">
-                                            <input id="h_province" type="text" class="form-control" name="h_province" value="{{ (isset($user))  ? $user->h_province : '' }}" autofocus>
+                                            <select class="form-control" id="h_province" name="h_province">
+                                                <option value="">-Select Province-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="h_cityOrMunicipal" class="col-md-4 control-label">City or Municipal</label>
                                         <div class="col-md-6">
-                                            <input id="h_cityOrMunicipal" type="text" class="form-control" name="h_cityOrMunicipal" value="{{ (isset($user))  ? $user->h_cityOrMunicipal : '' }}" autofocus>
+                                            <select class="form-control" id="h_cityOrMunicipal" name="h_cityOrMunicipal">
+                                                <option value="">-Select Municipal-</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="h_barangay" class="col-md-4 control-label">Barangay</label>
                                         <div class="col-md-6">
-                                            <input id="h_barangay" type="text" class="form-control" name="h_barangay" value="{{ (isset($user))  ? $user->h_barangay : '' }}" autofocus>
+                                            <select class="form-control" id="h_barangay" name="h_barangay">
+                                                <option value="">-Select Barangay-</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -257,6 +284,8 @@
 
                                                 <label for="birthDate">Birth Date: </label>
                                                 <input id="birthDate" type="text" style="width:15%;" class="form-control" name="birthDate[]"  autofocus value="{{ Carbon\Carbon::parse($beneficiary->birthDate)->format('Y-m-d') }}">
+
+
 
                                                 <label for="relationship">Relationship: </label>
                                                 {{ Form::select("relationship[]", 
@@ -422,6 +451,99 @@
         }
     });
 
+    var json = (function() {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': '{{asset('address.json')}}',
+            'dataType': "json",
+            'success': function (data) {
+                json = data;
+            }
+        });
+        return json;
+    })();
+
+    var p_province, p_cityOrMunicipal, p_barangay;
+    $(document).on("change", "#p_region", function(e){
+        p_province = json[$(this).val()];
+        $('#p_province')
+            .empty()
+            .append('<option selected="selected" value="">-Select Province-</option>')
+        $.each(p_province, function( index, value ) {
+            $('#p_province').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#p_province", function(e){
+        p_cityOrMunicipal = p_province[$(this).val()];
+        $('#p_cityOrMunicipal')
+            .empty()
+            .append('<option selected="selected" value="">-Select Municipal-</option>')
+        $.each(p_cityOrMunicipal, function( index, value ) { 
+            $('#p_cityOrMunicipal').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#p_cityOrMunicipal", function(e){
+        p_barangay = p_cityOrMunicipal[$(this).val()];
+        $('#p_barangay')
+            .empty()
+            .append('<option selected="selected" value="">-Select Barangay-</option>')
+        $.each(p_barangay, function( index, value ) {
+            $('#p_barangay').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    var h_province, h_cityOrMunicipal, h_barangay;
+    $(document).on("change", "#h_region", function(e){
+        h_province = json[$(this).val()];
+        $('#h_province')
+            .empty()
+            .append('<option selected="selected" value="">-Select Province-</option>')
+        $.each(h_province, function( index, value ) {
+            $('#h_province').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#h_province", function(e){
+        h_cityOrMunicipal = h_province[$(this).val()];
+        $('#h_cityOrMunicipal')
+            .empty()
+            .append('<option selected="selected" value="">-Select Municipal-</option>')
+        $.each(h_cityOrMunicipal, function( index, value ) { 
+            $('#h_cityOrMunicipal').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
+
+    $(document).on("change", "#h_cityOrMunicipal", function(e){
+        h_barangay = h_cityOrMunicipal[$(this).val()];
+        $('#h_barangay')
+            .empty()
+            .append('<option selected="selected" value="">-Select Barangay-</option>')
+        $.each(h_barangay, function( index, value ) {
+            $('#h_barangay').append($('<option>', { 
+                value: index,
+                text : index 
+            }));
+        });
+    });
 
 
 

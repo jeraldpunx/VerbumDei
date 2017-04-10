@@ -20,7 +20,6 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form id="frm-example" action="{{route('printAllUserQr')}}" method="GET">
                         <table id="example" class="table table-striped table-bordered select" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
@@ -46,7 +45,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </form>
+                    
                 </div>
             </div>
         </div>
@@ -102,10 +101,10 @@
               'className': 'dt-body-center',
               'width': '13%'
              }],
-             "dom": '<"toolbar">frtip'
+             "dom": '<"toolbar">lfrtip'
          });
         // $('<button id="refresh">Print</button>').appendTo('div.dataTables_filter');
-        $("div.toolbar").html("<a href='{{ url('admin/kyc/new') }}' class='btn btn-success'><span class='fa fa-plus'></span> New</a>  <button class='btn btn-primary printSelected'><span class='fa fa-qrcode'> - (<span class='selectedCount'>0</span> Selected)</button>");
+        $("div.toolbar").html("<div class='row' style><a href='{{ url('admin/kyc/new') }}' class='btn btn-success'><span class='fa fa-plus'></span> New</a> <form id='printAllUserQr' action='{{route('printAllUserQr')}}' method='GET'><button class='btn btn-primary printQrSelected'><span class='fa fa-qrcode'> - (<span class='selectedCount'>0</span> Selected)</button></form> <form id='printAllUserBadge' action='{{route('printAllUserBadge')}}' method='GET'><button class='btn btn-primary printBadgeSelected'><span class='fa fa-id-card'> - (<span class='selectedCount'>0</span> Selected)</button></form></div>");
 
         var count = 0;
          // Handle click on checkbox
@@ -171,11 +170,12 @@
        });
 
        // Handle form submission event 
-       $(document).on('click', '.printSelected', function(e){
+       $(document).on('click', '.printQrSelected', function(e){
             // e.preventDefault();
-         var form = $('form');
+         // var form = $('form');
+          var printAllUserQrForm = $('#printAllUserQr');
           $.each(rows_selected, function(index, rowId){
-            $(form).append(
+            $(printAllUserQrForm).append(
                  $('<input>')
                     .attr('type', 'hidden')
                     .attr('name', 'id[]')
@@ -188,7 +188,35 @@
           
           // // Output form data to a console     
           // $('#example-console').text($(form).serialize());
-          console.log("Form submission", $(form).serialize());
+          console.log("Form submission", $(printAllUserQrForm).serialize());
+           
+          // // Remove added elements
+          // $('input[name="id\[\]"]', form).remove();
+           
+          // // Prevent actual form submission
+          // e.preventDefault();
+       });
+
+       // Handle form submission event 
+       $(document).on('click', '.printBadgeSelected', function(e){
+            // e.preventDefault();
+         // var form = $('form');
+          var printAllUserBadgeForm = $('#printAllUserBadge');
+          $.each(rows_selected, function(index, rowId){
+            $(printAllUserBadgeForm).append(
+                 $('<input>')
+                    .attr('type', 'hidden')
+                    .attr('name', 'id[]')
+                    .val(rowId)
+             );
+            console.log(rowId);
+          });
+
+          // // FOR DEMONSTRATION ONLY     
+          
+          // // Output form data to a console     
+          // $('#example-console').text($(form).serialize());
+          console.log("Form submission", $(printAllUserBadgeForm).serialize());
            
           // // Remove added elements
           // $('input[name="id\[\]"]', form).remove();

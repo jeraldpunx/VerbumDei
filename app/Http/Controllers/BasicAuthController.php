@@ -9,7 +9,7 @@ use Input;
 use DNS2D;
 use App;
 use Validator;
-ini_set('max_execution_time', 180);
+ini_set('max_execution_time', 0);
 
 class BasicAuthController extends Controller
 {
@@ -23,7 +23,7 @@ class BasicAuthController extends Controller
 
     public function postLogin()
     {
-        $response = Curl::to('http://52.74.115.167:703/index.php')
+        $response = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20000',
                           'userName' => Input::get('username'),
@@ -51,7 +51,7 @@ class BasicAuthController extends Controller
 
     public function getRegister()
     {
-        $communities = Curl::to('http://52.74.115.167:703/index.php')
+        $communities = Curl::to(Config('database.connections.curlIp'))
             ->withData( [ 'mtmaccess_api' => 'true',
                           'transaction' => '20021'
                            ] )
@@ -72,7 +72,7 @@ class BasicAuthController extends Controller
             $messages = $validator->messages();
             return redirect()->back()->withErrors($messages)->withInput();
         } else {
-            $response = Curl::to('http://52.74.115.167:703/index.php')
+            $response = Curl::to(Config('database.connections.curlIp'))
             ->withData([ 'mtmaccess_api' => 'true',
                           'transaction' => '20004',
                           'userName' => Input::get('username'),
@@ -90,6 +90,7 @@ class BasicAuthController extends Controller
                 Session::put('usertype', 'CLIENT');
                 Session::put('username', Input::get('username'));
                 Session::put('password', md5(Input::get('password')));
+                Session::put('branchId', Input::get('community'));
                 return redirect('profile');
             } else {
                 return redirect()->back()->withInput()->with('response',$response);

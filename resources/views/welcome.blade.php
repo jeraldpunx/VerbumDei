@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="bg"></div>
+<div class="jumbotron">
+  <h1>Bootstrap Jumbotron</h1>
+  <p class="lead">+ Parallax Effect using jQuery</p>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -17,7 +22,7 @@
                     
                     <div class="card-content">
                         <span class="card-title">{{$event->iiName}}{{($event->iiDesc) ? "({$event->iiDesc})" : ""}}</span>
-                        <span>₱{{$event->iiUnitPrice}}</span>                    
+                        <p>₱{{$event->iiUnitPrice}}</p>                    
                     </div><!-- card content -->
                     </a>
                 </div>
@@ -26,4 +31,19 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+<script type="text/javascript">
+    var jumboHeight = $('.jumbotron').outerHeight();
+    var navHeight = $('nav').outerHeight();
+    function parallax(){
+        var scrolled = $(window).scrollTop();
+        $('.bg').css('height', (jumboHeight-scrolled+navHeight) + 'px');
+    }
+
+    $(window).scroll(function(e){
+        parallax();
+    });
+</script>
 @endsection

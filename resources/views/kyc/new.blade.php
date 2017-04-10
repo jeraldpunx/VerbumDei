@@ -194,7 +194,7 @@
                                         <label for="province" class="col-md-4 control-label">Province*</label>
                                         <div class="col-md-6">
                                             <select class="form-control" id="province" name="province">
-                                                <option value="">-Select Region-</option>
+                                                <option value="">-Select Province-</option>
                                             </select>
                                         </div>
                                     </div>
